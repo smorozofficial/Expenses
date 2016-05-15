@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Excel = Microsoft.Office.Interop.Excel;
+
 
 namespace Dasha
 {
@@ -34,6 +36,11 @@ namespace Dasha
         DateTime MinDate = new DateTime();
         DateTime MaxDate = new DateTime();
 
+
+        private Excel.Application excelapp;
+        private Excel.Workbook excelappworkbook;
+        private Excel.Window excelWindow;
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,6 +51,12 @@ namespace Dasha
             this.backgroundworker1 = (BackgroundWorker)this.FindResource("backgroundWorker_1");
             this.backgroundworker1.WorkerSupportsCancellation = true;
             this.backgroundworker2 = (BackgroundWorker)this.FindResource("backgroundWorker_2");
+            
+            this.Date2_StackPanel.Visibility = Visibility.Hidden;
+            this.Date3_StackPanel.Visibility = Visibility.Hidden;
+            this.Date4_StackPanel.Visibility = Visibility.Hidden;
+            this.Date5_StackPanel.Visibility = Visibility.Hidden;
+
 
         }
         /// <summary>
@@ -102,7 +115,37 @@ namespace Dasha
 
 
             if (this.Process.IsVisible)
-            {                
+            {
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                {
+                    if (e.Key == Key.D1)
+                    {
+                        this.Report1_PreviewMouseLeftButtonDown(this.Report1, null);
+                    }
+                    if (e.Key == Key.D2)
+                    {
+                        this.Report2_PreviewMouseLeftButtonDown(this.Report2, null);
+                    }
+                }
+
+                    if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && (e.Key == Key.Enter))
+                {
+                    if (this.Date_DatePicker.IsKeyboardFocusWithin)
+                    {
+                        this.Notes_TextBox.Focus();
+
+                        string sql = string.Format("INSERT INTO Планы ({0}, {1}, {2}) VALUES ('{3}', '{4}', '{5}')", "Наименование", "Дата", "Значение", this.Object_TextBox.Text, this.Date_DatePicker.DisplayDate.ToString(), this.Value_TextBox.Text);
+
+                        this.ConnectDB.Open();
+                        this.insert(sql);
+                        this.ConnectDB.Close();
+                        
+                        MessageBox.Show("dksfadkfa");
+
+                        return;
+                    }
+                    return;
+                }            
                 if (e.Key == Key.Enter)
                 {
                     if (this.Object_TextBox.IsFocused && this.ObjectChecking())
@@ -117,7 +160,7 @@ namespace Dasha
                     }
                     if (this.Date_DatePicker.IsKeyboardFocusWithin)
                     {
-                        this.Input.Focus();
+                        this.Notes_TextBox.Focus();
                         this.Input_MouseDown(this.Input, null);
                         return;
                     }
@@ -287,6 +330,8 @@ namespace Dasha
             this.activeBorder = Border1;
 
             this.Date_DatePicker.SelectedDate = System.DateTime.Now;
+            this.Date1_To.SelectedDate = DateTime.Today.Date;
+            this.Date1_From.SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             this.Password_Text.Focus();
             
             
@@ -478,8 +523,8 @@ namespace Dasha
             {
                 
 
+                //double str = double.Parse(r["Расход_деньги"].ToString());
                 double str = double.Parse(r["Расход_деньги"].ToString().Replace('.', ','));
-
                 Expense ex = this.FindExpense(r["Наименование"].ToString());
 
                 
@@ -604,7 +649,7 @@ namespace Dasha
         private bool ValueChecking(string val)
         {
             double x = 0;
-            if (double.TryParse(val, out x) && x > 0)
+            if (double.TryParse(val, out x) && x >= 0)
             {
                 this.Value_TextBox.Text = string.Format("{0:N}", x);
                 return true;
@@ -710,8 +755,6 @@ namespace Dasha
                 TreeViewItem t = this.F(Objects_TreeView.Items, s);
 
                 this.Find_TextBox.Focus();
-
-                
 
                 this.Find_TextBox.Text = "";
                 this.Objects_TreeView.Focus();
@@ -879,9 +922,9 @@ namespace Dasha
                             {
                                 if (dtRow.ItemArray[0].Equals(id))
                                 {
-                                    dtRow["Дата"] = string.Format("{0:dd.MM.yyyy HH:mm:ss}", dt);
+                                    dtRow["Дата"] = string.Format("{0:dd.MM.yyyy}", dt);
 
-                                    string sql = string.Format("UPDATE Данные SET {0} = '{1}' WHERE {2} = {3}", "Дата", dt.ToString(), "ID", id);
+                                    string sql = string.Format("UPDATE Данные SET {0} = '{1}' WHERE {2} = {3}", "Дата", dt.Date.ToString(), "ID", id);
 
                                     this.ConnectDB.Open();
                                     this.insert(sql);
@@ -894,7 +937,6 @@ namespace Dasha
                                 }
                             }
                         }
-                        
                     }            
                 }
                 else
@@ -1011,8 +1053,9 @@ namespace Dasha
 
         private void Input_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            this.Input.Focus();
             DateTime date_now = this.Date_DatePicker.DisplayDate.Date;
-
+            
             if (this.ObjectChecking() && this.ValueChecking(this.Value_TextBox.Text) && this.DateChecking(date_now))
             {
                 Expense ex = this.FindExpense(this.Object_TextBox.Text);
@@ -1031,144 +1074,212 @@ namespace Dasha
                     }
                 }
 
-                if (this.Dates.Count == 0)//Добавление данных в пустой список
+                if (ex.Type.Equals("Материал"))
                 {
-                    this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                    this.Add_Record(ex, now, now, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
                 }
                 else
                 {
-                    //Добавление элемента с наименьшей датой
-                    if (date_min.Equals(DateTime.MinValue))
+                    if (this.Dates.Count == 0)//Добавление данных в пустой список
                     {
-                        int n = (date_max.Date - date_now.Date).Days;
-
-                        double max = 0.0;
-                        string note = "", id = "", date = "";
-
-
-                        foreach (DataRow dr in this.activeTable.Rows)
-                        {
-                            if (date_max.Equals(DateTime.Parse(dr["Дата"].ToString()).Date))
-                            {
-                                max = Double.Parse(dr["Показания"].ToString());
-                                note = dr["Примечание"].ToString();
-                                id = dr["ID"].ToString();
-                                date = dr["Дата"].ToString();
-                                break;
-                            }
-                        }
-
-                        double del = (max - now) / n;
-
-                        if (max < now)
-                        {
-                            MessageBox.Show("Значение слишком велико!");
-                            this.Value_TextBox.Text = "";
-                            this.Value_TextBox.Focus();
-                            return;
-                        }
-
-                        if (n > 1 && MessageBox.Show("Добавить " + n + " записи?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        {
-                            this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
-                            for (int i = 1; i < n; i++)
-                            {
-                                now = Math.Round(now + del, 2);
-                                this.Add_Record(ex, now, Math.Round(del * ex.k, 2), date_now.AddDays(i), "");
-                            }
-                            this.Add_Record(ex, max, Math.Round(del * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, note);
-
-                            this.ConnectDB.Open();
-                            string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", id);
-                            this.insert(sql);
-                            this.ConnectDB.Close();
-                        }
-                        if (n == 1)
-                        {
-                            this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, note);
-                            this.Add_Record(ex, max, Math.Round(del * ex.k, 2), DateTime.Parse(date), note);
-                            
-                            this.ConnectDB.Open();
-                            string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", id);
-                            this.insert(sql);
-                            this.ConnectDB.Close();
-                        }
+                        this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
                     }
-
-
-
-                    //Добавление элемента с наибольшей датой
-                    if (date_max.Equals(DateTime.MaxValue))
+                    else
                     {
-                        int n = (date_now.Date - date_min.Date).Days;
-
-                        double min = 0.0;
-
-                        foreach (DataRow dr in this.activeTable.Rows)
+                        //Добавление элемента с наименьшей датой
+                        if (date_min.Equals(DateTime.MinValue))
                         {
-                            if (date_min.Equals(DateTime.Parse(dr["Дата"].ToString()).Date))
+                            int n = (date_max.Date - date_now.Date).Days;
+
+                            double max = 0.0;
+                            string max_note = "", max_id = "", max_date = "";
+
+
+                            foreach (DataRow dr in this.activeTable.Rows)
                             {
-                                min = Double.Parse(dr["Показания"].ToString());
-                                break;
+                                if (date_max.Equals(DateTime.Parse(dr["Дата"].ToString()).Date))
+                                {
+                                    max = Double.Parse(dr["Показания"].ToString());
+                                    max_note = dr["Примечание"].ToString();
+                                    max_id = dr["ID"].ToString();
+                                    max_date = dr["Дата"].ToString();
+                                    break;
+                                }
+                            }
+
+                            double del = (max - now) / n;
+
+                            if (max <= now)
+                            {
+                                MessageBox.Show("Значение слишком велико!");
+                                this.Value_TextBox.Text = "";
+                                this.Value_TextBox.Focus();
+                                return;
+                            }
+
+                            if (n > 1 && MessageBox.Show("Добавить " + n + " записи?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            {
+                                this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                                for (int i = 1; i < n; i++)
+                                {
+                                    now = Math.Round(now + del, 2);
+                                    this.Add_Record(ex, now, Math.Round(del * ex.k, 2), date_now.AddDays(i), "");
+                                }
+                                this.Add_Record(ex, max, Math.Round(del * ex.k, 2), DateTime.Parse(max_date).Date, max_note);
+
+                                this.ConnectDB.Open();
+                                string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", max_id);
+                                this.insert(sql);
+                                this.ConnectDB.Close();
+                            }
+                            if (n == 1)
+                            {
+                                this.Add_Record(ex, now, 0, this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                                this.Add_Record(ex, max, Math.Round(del * ex.k, 2), DateTime.Parse(max_date).Date, max_note);
+
+                                this.ConnectDB.Open();
+                                string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", max_id);
+                                this.insert(sql);
+                                this.ConnectDB.Close();
                             }
                         }
 
-                        double del = (now - min) / n;
 
-                        if (now < min)
+
+                        //Добавление элемента с наибольшей датой
+                        if (date_max.Equals(DateTime.MaxValue))
                         {
-                            MessageBox.Show("Значение слишком мало!");
-                            this.Value_TextBox.Text = "";
-                            this.Value_TextBox.Focus();
-                            return;
-                        }
+                            int n = (date_now.Date - date_min.Date).Days;
 
+                            double min = 0.0;
 
-                        if (n > 1 && MessageBox.Show("Добавить " + n + " записи?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        {
-
-                            for (int i = 1; i < n; i++)
+                            foreach (DataRow dr in this.activeTable.Rows)
                             {
-                                min = Math.Round(min + del, 2);
-                                this.Add_Record(ex, min, Math.Round(del * ex.k, 2), date_min.AddDays(i), "");
+                                if (date_min.Equals(DateTime.Parse(dr["Дата"].ToString()).Date))
+                                {
+                                    min = Double.Parse(dr["Показания"].ToString());
+                                    break;
+                                }
                             }
-                            this.Add_Record(ex, now, Math.Round(del * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
-                        }
-                        if (n == 1)
-                        {
-                            this.Add_Record(ex, now, Math.Round(del * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
-                        }
-                    }
 
+                            double del = (now - min) / n;
 
-
-                    if (this.Dates.Contains(date_min) && this.Dates.Contains(date_max))
-                    {
-                        double min = 0.0, max = 0.0;
-
-                        foreach (DataRow dr in this.activeTable.Rows)
-                        {
-                            if (date_min.Equals(DateTime.Parse(dr["Дата"].ToString())))
+                            if (now <= min)
                             {
-                                min = Double.Parse(dr["Показания"].ToString());
+                                MessageBox.Show("Значение слишком мало!");
+                                this.Value_TextBox.Text = "";
+                                this.Value_TextBox.Focus();
+                                return;
                             }
-                            if (date_max.Equals(DateTime.Parse(dr["Дата"].ToString())))
+
+
+                            if (n > 1 && MessageBox.Show("Добавить " + n + " записи?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                             {
-                                max = Double.Parse(dr["Показания"].ToString());
+
+                                for (int i = 1; i < n; i++)
+                                {
+                                    min = Math.Round(min + del, 2);
+                                    this.Add_Record(ex, min, Math.Round(del * ex.k, 2), date_min.AddDays(i), "");
+                                }
+                                this.Add_Record(ex, now, Math.Round(del * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                            }
+                            if (n == 1)
+                            {
+                                this.Add_Record(ex, now, Math.Round(del * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
                             }
                         }
 
-                        if (now < min || now > max)
-                        {
-                            MessageBox.Show("Значение не соответствует ограничениям!");
-                            this.Value_TextBox.Text = "";
-                            this.Value_TextBox.Focus();
-                            return;
-                        }
 
-                        Add_Record(ex, now, now, date_now, this.Notes_TextBox.Text);
+                        //добавление элемента в середину списка
+                        if (this.Dates.Contains(date_min) && this.Dates.Contains(date_max))
+                        {
+                            double min = 0.0, max = 0.0;
+                            int n_min = (date_now.Date - date_min.Date).Days;
+                            int n_max = (date_max.Date - date_now.Date).Days;
+                            int n = n_max + n_min - 1;
+                            string max_note = "", max_id = "", max_date = "";
+
+                            foreach (DataRow dr in this.activeTable.Rows)
+                            {
+                                if (date_min.Equals(DateTime.Parse(dr["Дата"].ToString())))
+                                {
+                                    min = Double.Parse(dr["Показания"].ToString());
+                                }
+                                if (date_max.Equals(DateTime.Parse(dr["Дата"].ToString())))
+                                {
+                                    max = Double.Parse(dr["Показания"].ToString());
+                                    max_note = dr["Примечание"].ToString();
+                                    max_id = dr["ID"].ToString();
+                                    max_date = dr["Дата"].ToString();
+                                }
+                            }
+
+                            double del_min = (now - min) / n_min;
+                            double del_max = (max - now) / n_max;
+
+                            if (now <= min || now >= max)
+                            {
+                                MessageBox.Show("Значение не соответствует ограничениям!");
+                                this.Value_TextBox.Text = "";
+                                this.Value_TextBox.Focus();
+                                return;
+                            }
+
+                            if (n == 1)
+                            {
+                                Add_Record(ex, now, now - min, date_now, this.Notes_TextBox.Text);
+                                this.Add_Record(ex, max, max - now, DateTime.Parse(max_date).Date, max_note);
+
+                                this.ConnectDB.Open();
+                                string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", max_id);
+                                this.insert(sql);
+                                this.ConnectDB.Close();
+                            }
+                            if (n > 1 && MessageBox.Show("Добавить " + n + " записи?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            {
+                                if (n_min == 1)
+                                {
+                                    this.Add_Record(ex, now, Math.Round(del_min * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                                }
+                                if (n_max == 1)
+                                {
+
+
+                                    this.ConnectDB.Open();
+                                    string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", max_id);
+                                    this.insert(sql);
+                                    this.ConnectDB.Close();
+                                    this.Add_Record(ex, max, max - now, DateTime.Parse(max_date).Date, max_note);
+                                }
+                                if (n_min > 1)
+                                {
+                                    for (int i = 1; i < n_min; i++)
+                                    {
+                                        min = Math.Round(min + del_min, 2);
+                                        this.Add_Record(ex, min, Math.Round(del_min * ex.k, 2), date_min.AddDays(i), "");
+                                    }
+                                    this.Add_Record(ex, now, Math.Round(del_min * ex.k, 2), this.Date_DatePicker.DisplayDate.Date, this.Notes_TextBox.Text);
+                                }
+                                if (n_max > 1)
+                                {
+
+                                    for (int i = 1; i < n_max; i++)
+                                    {
+                                        now = Math.Round(now + del_max, 2);
+                                        this.Add_Record(ex, now, Math.Round(del_max * ex.k, 2), date_now.AddDays(i), "");
+                                    }
+                                    this.Add_Record(ex, max, Math.Round(del_max * ex.k, 2), DateTime.Parse(max_date).Date, max_note);
+
+                                    this.ConnectDB.Open();
+                                    string sql = string.Format("DELETE FROM Данные WHERE ({0} = {1});", "ID", max_id);
+                                    this.insert(sql);
+                                    this.ConnectDB.Close();
+                                }
+                            }
+                        }
                     }
                 }
+                
 
                 t_Selected(this.Objects_TreeView.SelectedItem, null);
 
@@ -1193,7 +1304,7 @@ namespace Dasha
             string col6 = "Разница";
             string col7 = "Расход_деньги";
             string col8 = "Примечание";
-            string sql = string.Format("INSERT INTO Данные ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) VALUES ('{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}')", col1, col2, col3, col4, col5, col6, col7, col8, ex.Name, dt.ToString(), val.ToString(), fact.ToString(), "", "", (ex.Price * fact).ToString(), note);
+            string sql = string.Format("INSERT INTO Данные ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) VALUES ('{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}')", col1, col2, col3, col4, col5, col6, col7, col8, ex.Name, dt.Date.ToString(), val.ToString(), fact.ToString(), "", "", (ex.Price * fact).ToString(), note);
 
             this.ConnectDB.Open();
             this.insert(sql);
@@ -1202,12 +1313,129 @@ namespace Dasha
 
         private void Input_MouseEnter(object sender, MouseEventArgs e)
         {
-            this.Input.Background = this.Process.Background;
+            (sender as Label).Background = this.Process.Background;
         }
 
         private void Input_MouseLeave(object sender, MouseEventArgs e)
         {
-            this.Input.Background = null; ;
+            (sender as Label).Background = null;
+        }
+
+        /// <summary>
+        /// добавление панели дат для отчета
+        /// </summary>
+        /// <param name="sender"></param>
+        private void Add_Date_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            for(int i =0; i < this.Dates_StackPanel.Children.Count; i++)
+            {
+                StackPanel sp = this.Dates_StackPanel.Children[i] as StackPanel;
+                if (!sp.IsVisible)
+                {
+                    if (i == 0)
+                    {
+                        (sp.Children[3] as DatePicker).SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                        (sp.Children[5] as DatePicker).SelectedDate = DateTime.Now.Date;
+                    }
+                    else
+                    {
+
+                    }
+                    sp.Visibility = Visibility.Visible;
+                    
+                    
+                    return;
+                }
+            }
+
+            MessageBox.Show("Больше пяти интервалов добавлять нельзя!", "Сообщение");
+        }
+
+        private void DateHidden_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StackPanel sp = (sender as Label).Parent as StackPanel;
+            sp.Visibility = Visibility.Hidden;
+            //скрытую дату перенести в конец списка
+            this.Dates_StackPanel.Children.Remove(sp);
+            this.Dates_StackPanel.Children.Add(sp);
+
+
+        }
+
+        private void DatePicker_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            DatePicker dp = sender as DatePicker;
+            if (e.Key == Key.Up)
+            {
+                DateTime dt = dp.DisplayDate.Date;
+                dt = dt.AddDays(1.0);
+                dp.SelectedDate = dt;
+                dp.DisplayDate = dt;
+            }
+            if (e.Key == Key.Down)
+            {
+                DateTime dt = dp.DisplayDate.Date;
+                dt = dt.AddDays(-1.0);
+                dp.SelectedDate = dt;
+                dp.DisplayDate = dt;
+            }
+        }
+
+        private void Next_Month_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StackPanel sp = (sender as Label).Parent as StackPanel;
+
+            (sp.Children[3] as DatePicker).SelectedDate = new DateTime(DateTime.Today.Year, (sp.Children[3] as DatePicker).SelectedDate.Value.AddMonths(1).Month, 1);
+            (sp.Children[5] as DatePicker).SelectedDate = (sp.Children[3] as DatePicker).SelectedDate.Value.AddMonths(1).AddDays(-1);
+        }
+
+        private void Back_Month_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StackPanel sp = (sender as Label).Parent as StackPanel;
+
+            (sp.Children[3] as DatePicker).SelectedDate = new DateTime(DateTime.Today.Year, (sp.Children[3] as DatePicker).SelectedDate.Value.AddMonths(-1).Month, 1);
+            (sp.Children[5] as DatePicker).SelectedDate = (sp.Children[3] as DatePicker).SelectedDate.Value.AddMonths(1).AddDays(-1);
+        }
+
+        private void Next_Year_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StackPanel sp = (sender as Label).Parent as StackPanel;
+            (sp.Children[3] as DatePicker).SelectedDate = (sp.Children[3] as DatePicker).SelectedDate.Value.Date.AddYears(1);
+            (sp.Children[5] as DatePicker).SelectedDate = (sp.Children[5] as DatePicker).SelectedDate.Value.Date.AddYears(1);
+        }
+
+        private void Back_Year_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StackPanel sp = (sender as Label).Parent as StackPanel;
+            (sp.Children[3] as DatePicker).SelectedDate = (sp.Children[3] as DatePicker).SelectedDate.Value.Date.AddYears(-1);
+            (sp.Children[5] as DatePicker).SelectedDate = (sp.Children[5] as DatePicker).SelectedDate.Value.Date.AddYears(-1);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Report1_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            excelapp = new Excel.Application();
+            excelapp.Visible = true;
+            excelapp.SheetsInNewWorkbook = 1;
+            excelappworkbook = excelapp.Workbooks.Add(Type.Missing);
+
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Report2_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            excelapp = new Excel.Application();
+            excelapp.Visible = true;
+            excelapp.SheetsInNewWorkbook = 1;
+            excelapp.Workbooks.Add(Type.Missing);
         }
     }
 }

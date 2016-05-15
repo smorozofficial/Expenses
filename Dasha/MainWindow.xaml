@@ -61,9 +61,9 @@
             <Frame.Content>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="93*"/>
+                        <RowDefinition/>
                         <RowDefinition Height="50"/>
-                        <RowDefinition Height="37*"/>
+                        <RowDefinition Height="190"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="330"/>
@@ -79,12 +79,12 @@
                                 <Style.Triggers>
                                     <Trigger Property="Orientation" Value="Vertical">
                                         <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Width" Value="10"></Setter>
+                                        <Setter Property="Width" Value="9"></Setter>
                                         <Setter Property="Background" Value="{Binding ElementName=Process, Path=Background, Mode=OneWay}"></Setter>
                                     </Trigger>
                                     <Trigger Property="Orientation" Value="Horizontal">
                                         <Setter Property="MinHeight" Value="0"/>
-                                        <Setter Property="Height" Value="10"></Setter>
+                                        <Setter Property="Height" Value="9"></Setter>
                                         <Setter Property="Background" Value="{Binding ElementName=Process, Path=Background, Mode=OneWay}"></Setter>
                                     </Trigger>
                                 </Style.Triggers>
@@ -95,7 +95,6 @@
 
                     <TextBox x:Name="Find_TextBox" TextWrapping="Wrap" FontSize="14" BorderBrush="#FFA0A0A0" Margin="10,9,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="23" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Tag="{Binding ElementName=Masked_Find_TextBox, Mode=OneWay}" LostFocus="TextBox_LostFocus" TabIndex="20" GotFocus="TextBox_GotFocus" BorderThickness="0,0,0,1" Background="{x:Null}" TextChanged="Find_TextBox_TextChanged" SelectionBrush="Black" MaxLength="40"/>
                     <TextBox x:Name="Masked_Find_TextBox" FontSize="14" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="#FFB4B4B4" Text="Поиск по объектам расхода (Пробел)" Padding="5,1" VerticalScrollBarVisibility="Disabled" Margin="10,9,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="23" HorizontalScrollBarVisibility="Disabled" PreviewMouseDown="Masked_TextBox_PreviewMouseDown" Tag="{Binding ElementName=Find_TextBox, Mode=OneWay}" TabIndex="20" GotFocus="Masked_TextBox_GotFocus"/>
-                    <StackPanel Grid.Column="1" Grid.Row="2" Margin="11,10,9,10" Grid.ColumnSpan="5" Background="{Binding Background, ElementName=Data}" Effect="{Binding Effect, ElementName=Data}"/>
                     <Border Grid.ColumnSpan="5" Grid.Column="1" Margin="10,0" Grid.Row="1" BorderBrush="#FFC8C8C8" BorderThickness="0" Background="{Binding Background, ElementName=Data}" Effect="{Binding Effect, ElementName=Data}" />
                     <DatePicker x:Name="Date_DatePicker" VerticalAlignment="Bottom" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" Grid.Column="3" Margin="10,10,0,10" VerticalContentAlignment="Center" Grid.Row="1" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" BorderBrush="{Binding BorderBrush, ElementName=Find_TextBox}" IsHitTestVisible="{Binding IsHitTestVisible, ElementName=Value_TextBox}"/>
                     <TextBox x:Name="Value_TextBox" TextWrapping="Wrap" FontSize="14" Margin="0,10" VerticalContentAlignment="Center" Grid.Column="2" VerticalAlignment="Bottom" Height="23" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Tag="{Binding ElementName=Masked_Value_TextBox, Mode=OneWay}" LostFocus="TextBox_LostFocus" TabIndex="2" GotFocus="TextBox_GotFocus" MaxLength="15" MaxLines="1" BorderThickness="0,0,0,1" Background="{x:Null}" SelectionBrush="Black" BorderBrush="{Binding BorderBrush, ElementName=Find_TextBox}" IsHitTestVisible="False"/>
@@ -110,12 +109,12 @@
                                 <Style.Triggers>
                                     <Trigger Property="Orientation" Value="Vertical">
                                         <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Width" Value="10"></Setter>
+                                        <Setter Property="Width" Value="9"></Setter>
                                         <Setter Property="Background" Value="{Binding ElementName=Process, Path=Background, Mode=OneWay}"></Setter>
                                     </Trigger>
                                     <Trigger Property="Orientation" Value="Horizontal">
                                         <Setter Property="MinHeight" Value="0"/>
-                                        <Setter Property="Height" Value="10"></Setter>
+                                        <Setter Property="Height" Value="9"></Setter>
                                         <Setter Property="Background" Value="{Binding ElementName=Process, Path=Background, Mode=OneWay}"></Setter>
                                     </Trigger>
                                 </Style.Triggers>
@@ -149,12 +148,12 @@
                                 <Style.Triggers>
                                     <Trigger Property="Orientation" Value="Vertical">
                                         <Setter Property="MinWidth" Value="0"/>
-                                        <Setter Property="Width" Value="10"></Setter>
+                                        <Setter Property="Width" Value="9"></Setter>
                                         <Setter Property="Background" Value="White"></Setter>
                                     </Trigger>
                                     <Trigger Property="Orientation" Value="Horizontal">
                                         <Setter Property="MinHeight" Value="0"/>
-                                        <Setter Property="Height" Value="10"></Setter>
+                                        <Setter Property="Height" Value="9"></Setter>
                                         <Setter Property="Background" Value="White"></Setter>
                                     </Trigger>
                                 </Style.Triggers>
@@ -185,7 +184,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Дата" Width="145" IsReadOnly="False" Binding="{Binding Path='Дата'}" >
+                            <DataGridTextColumn Header="Дата" Width="auto" IsReadOnly="False" Binding="{Binding Path='Дата'}" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Padding" Value="10, 0, 10, 0"></Setter>
@@ -264,6 +263,80 @@
                     </DataGrid>
                     <Border Grid.ColumnSpan="5" Grid.Column="1" Margin="10,-1,10,0" BorderThickness="0" Background="White" Grid.Row="1" VerticalAlignment="Top" Height="10" />
                     <Label x:Name="Input" Content="Записать" Margin="0,18,20,10" VerticalAlignment="Bottom" Grid.Column="5" Grid.Row="1" BorderBrush="{Binding BorderBrush, ElementName=Find_TextBox}" BorderThickness="0,0,0,1" HorizontalContentAlignment="Center" Padding="5,1" IsTabStop="True" FontSize="14" Cursor="Hand" IsHitTestVisible="{Binding IsHitTestVisible, ElementName=Value_TextBox}" MouseDown="Input_MouseDown" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                    <Grid x:Name="canvas" Background="{Binding Background, ElementName=Data}" Grid.ColumnSpan="5" Grid.Column="1" Effect="{Binding Effect, ElementName=Data}" Margin="11,10,9,10" Grid.Row="2" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="377"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label x:Name="Report2" Content="(Ctrl+2) Анализ затрат по электроэнергии" Margin="10,31,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseLeave="Input_MouseLeave" MouseEnter="Input_MouseEnter" PreviewMouseLeftButtonDown="Report2_PreviewMouseLeftButtonDown"/>
+                        <Label x:Name="Report1" Content="(Ctrl+1) Анализ затрат по материалам" Margin="10,10,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Report1_PreviewMouseLeftButtonDown"/>
+                        <Label x:Name="Add_Date" Content="д о б а в и т ь  д а т у" Height="20" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" Width="{Binding ActualWidth, ElementName=Dates_StackPanel, Mode=OneWay}" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" FontSize="14" PreviewMouseLeftButtonDown="Add_Date_PreviewMouseLeftButtonDown" Margin="10,140,0,0" RenderTransformOrigin="0.557,0.429" Cursor="Hand"/>
+                        <StackPanel x:Name="Dates_StackPanel" Margin="10,10,10.143,29.714">
+                            <StackPanel x:Name="Date1_StackPanel" Height="26" Margin="0,0,1.143,0" Orientation="Horizontal">
+                                <Label x:Name="Back_Year_1" Content="&lt;&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Year_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Back_Month_1" Content="&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="label2" Content="с" FontSize="14" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date1_From" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" HorizontalAlignment="Left" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="label2_Copy" Content="по" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date1_To" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="Next_Month_1" Content="&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Next_Year_1" Content="&gt;&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Year_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="DateHidden1" Content="x" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,0,10,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="DateHidden_PreviewMouseLeftButtonDown"/>
+                            </StackPanel>
+                            <StackPanel x:Name="Date2_StackPanel" Height="26" Margin="0,0,1.143,0" Orientation="Horizontal" IsHitTestVisible="True">
+                                <Label x:Name="Back_Year_2" Content="&lt;&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="Back_Month_2" Content="&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="label3" Content="с" FontSize="14" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date2_From" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" HorizontalAlignment="Left" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="label2_Copy8" Content="по" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date2_To" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="Next_Month_2" Content="&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Next_Year_2" Content="&gt;&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="label2_Copy11" Content="x" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,0,10,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="DateHidden_PreviewMouseLeftButtonDown"/>
+                            </StackPanel>
+                            <StackPanel x:Name="Date3_StackPanel" Height="26" Margin="0,0,1.143,0" Orientation="Horizontal" IsHitTestVisible="True">
+                                <Label x:Name="Back_Year_3" Content="&lt;&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="Back_Month_3" Content="&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="label4" Content="с" FontSize="14" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date3_From" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" HorizontalAlignment="Left" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="label2_Copy14" Content="по" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date3_To" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="Next_Month_3" Content="&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Next_Year_3" Content="&gt;&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="label2_Copy17" Content="x" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,0,10,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="DateHidden_PreviewMouseLeftButtonDown"/>
+                            </StackPanel>
+                            <StackPanel x:Name="Date4_StackPanel" Height="26" Margin="0,0,1.143,0" Orientation="Horizontal" IsHitTestVisible="True">
+                                <Label x:Name="Back_Year_4" Content="&lt;&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="Back_Month_4" Content="&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="label5" Content="с" FontSize="14" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date4_From" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" HorizontalAlignment="Left" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="label2_Copy20" Content="по" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date4_To" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="Next_Month_4" Content="&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Next_Year_4" Content="&gt;&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="label2_Copy23" Content="x" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,0,10,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="DateHidden_PreviewMouseLeftButtonDown"/>
+                            </StackPanel>
+                            <StackPanel x:Name="Date5_StackPanel" Height="26" Margin="0,0,1.143,0" Orientation="Horizontal" IsHitTestVisible="True">
+                                <Label x:Name="Back_Year_5" Content="&lt;&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="Back_Month_5" Content="&lt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Back_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="label6" Content="с" FontSize="14" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date5_From" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" HorizontalAlignment="Left" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="label2_Copy26" Content="по" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="5,0,5,1" IsEnabled="False"/>
+                                <DatePicker x:Name="Date5_To" VerticalAlignment="Top" FontSize="14" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="2,1" SelectedDate="2015-02-01" Height="23" VerticalContentAlignment="Center" TabIndex="3" BorderThickness="0,0,0,1" Background="{x:Null}" Width="110" Margin="0" PreviewKeyDown="DatePicker_PreviewKeyDown" BorderBrush="{x:Null}"/>
+                                <Label x:Name="Next_Month_5" Content="&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" FontSize="14" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Next_Month_PreviewMouseLeftButtonDown"/>
+                                <Label x:Name="Next_Year_5" Content="&gt;&gt;" Height="23" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="2,0,2,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                                <Label x:Name="label2_Copy29" Content="x" FontSize="14" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,0,10,1" Foreground="{Binding Foreground, ElementName=Masked_Find_TextBox}" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="DateHidden_PreviewMouseLeftButtonDown"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Border BorderBrush="{Binding BorderBrush, ElementName=Find_TextBox}" BorderThickness="1" Padding="0" Margin="0.857,10,0.429,9.571" Grid.Column="1" Width="1"/>
+                        <Label x:Name="label_Copy" Content="Отчет 3" Margin="10,52,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                        <Label x:Name="label_Copy1" Content="Отчет 4" Margin="10,73,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                        <Label x:Name="label_Copy2" Content="Отчет 5" Margin="10,94,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                        <Label x:Name="label_Copy3" Content="Отчет 6" Margin="10,115,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                        <Label x:Name="label_Copy4" Content="Отчет 7" Margin="10,136,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                    </Grid>
                 </Grid>
             </Frame.Content>
         </Frame>

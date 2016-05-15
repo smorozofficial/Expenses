@@ -62,7 +62,7 @@ namespace Dasha
                                 {
                                     string matr = dtRow2["Наименование"].ToString();
 
-                                    this.exs.Add(new Expense(dtRow2["Наименование"].ToString(), dtRow2["Единицы_измерения"].ToString(), dtRow2["Цена"].ToString(), sklad, "", "", dtRow2["k"].ToString()));
+                                    this.exs.Add(new Expense(dtRow2["Наименование"].ToString(), dtRow2["Единицы_измерения"].ToString(), dtRow2["Цена"].ToString(), sklad, "Материал", "", dtRow2["k"].ToString()));
                                     this.names.Add(matr);
 
                                     try

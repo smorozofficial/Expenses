@@ -19,8 +19,8 @@ namespace Dasha
             this.k = double.Parse(k);
         }
 
-        public string Name { get; set; }
-        public string Dim { get; set; }
+        public string Name { get; set; }//название
+        public string Dim { get; set; }//единицы измерения
         public string Description { get; set; }
         public double Price { get; set; }
         public string Warehouse { get; set; }
