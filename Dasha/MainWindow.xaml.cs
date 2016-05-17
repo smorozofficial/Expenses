@@ -28,6 +28,9 @@ namespace Dasha
         BackgroundWorker backgroundworker;
         BackgroundWorker backgroundworker1;
         BackgroundWorker backgroundworker2;
+        BackgroundWorker Report1_BackgroundWorker;
+        BackgroundWorker Report2_BackgroundWorker;
+
         DataTable activeTable = new DataTable();
         DataTable asyncTable = new DataTable();
         Border activeBorder;
@@ -54,7 +57,9 @@ namespace Dasha
             this.backgroundworker1 = (BackgroundWorker)this.FindResource("backgroundWorker_1");
             this.backgroundworker1.WorkerSupportsCancellation = true;
             this.backgroundworker2 = (BackgroundWorker)this.FindResource("backgroundWorker_2");
-            
+            this.Report1_BackgroundWorker = (BackgroundWorker)this.FindResource("Report1_BackgroundWorker");
+            this.Report2_BackgroundWorker = (BackgroundWorker)this.FindResource("Report2_BackgroundWorker");
+
             this.Date2_StackPanel.Visibility = Visibility.Hidden;
             this.Date3_StackPanel.Visibility = Visibility.Hidden;
             this.Date4_StackPanel.Visibility = Visibility.Hidden;
@@ -1324,18 +1329,9 @@ namespace Dasha
                 StackPanel sp = this.Dates_StackPanel.Children[i] as StackPanel;
                 if (!sp.IsVisible)
                 {
-                    if (i == 0)
-                    {
-                        (sp.Children[3] as DatePicker).SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-                        (sp.Children[5] as DatePicker).SelectedDate = DateTime.Now.Date;
-                    }
-                    else
-                    {
-
-                    }
+                    (sp.Children[3] as DatePicker).SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                    (sp.Children[5] as DatePicker).SelectedDate = DateTime.Now.Date;
                     sp.Visibility = Visibility.Visible;
-                    
-                    
                     return;
                 }
             }
@@ -1410,118 +1406,8 @@ namespace Dasha
         /// <param name="e"></param>
         private void Report1_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            excelapp = new Excel.Application();
-            excelapp.Visible = true;
-            excelapp.SheetsInNewWorkbook = 1;
-            excelappworkbook = excelapp.Workbooks.Add(Type.Missing);
-            excelsheets = excelappworkbook.Worksheets;
-            excelworksheet = (Excel.Worksheet)excelsheets.get_Item(1);
-            excelworksheet.Activate();
-
-            DataTable Summ = new DataTable();//итоговая таблица
-            Summ.Columns.Add(new DataColumn("Наименование"));
-            Summ.Columns.Add(new DataColumn("Цена"));
-            Summ.Columns.Add(new DataColumn("План"));//кол-во по плану
-            Summ.Columns.Add(new DataColumn("СтП"));//стоимость по плану
-            Summ.Columns.Add(new DataColumn("Факт"));//кол-во по факту
-            Summ.Columns.Add(new DataColumn("СтФ"));//стоимость по факту
-            Summ.Columns.Add(new DataColumn("%"));//процент выполнения
-
-            int I = 4;
-
-            ConnectDB.Open();
-            foreach (Expense ex in this.exs)
-            {
-                if (ex.Type.Equals("Материал"))
-                {
-                    
-                    string query = string.Format("SELECT Дата, РасходФакт, Расход_план FROM Данные WHERE {0}='{1}'", "Наименование", ex.Name);
-
-                    OleDbDataAdapter cmd = new OleDbDataAdapter(query, ConnectDB);
-
-                    DataSet dt = new DataSet();
-                    cmd.Fill(dt, "Данные");//0
-
-                    double fsummary = 0.0, psummary = 0.0;
-
-
-
-                    foreach (DataRow dr in dt.Tables[0].Rows)
-                    {
-                        fsummary += Double.Parse(dr.ItemArray[1].ToString().Replace('.', ','));
-                        if (dr.ItemArray[2].ToString().Length == 0)
-                            continue;
-                        psummary += Double.Parse(dr.ItemArray[2].ToString().Replace('.', ','));
-                    }
-
-                    Summ.Rows.Add(ex.Name, ex.Price, psummary, (ex.Price * psummary).ToString(), fsummary, (ex.Price * fsummary).ToString(), "0");
-                }
-            }
-            ConnectDB.Close();
-
-            excelcells = excelworksheet.get_Range("A1", "G1");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "Анализ затрат по материалам";
-
-            excelcells = excelworksheet.get_Range("A2", "A3");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "Наименование материалов";
-            excelcells.ColumnWidth = 50;
-
-            excelcells = excelworksheet.get_Range("B2", "G3");
-            excelcells.Select();
-            excelcells.ColumnWidth = 10;
-
-            excelcells = excelworksheet.get_Range("B2", "B3");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "Цена";
-
-            excelcells = excelworksheet.get_Range("C2", "D2");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "План";
-
-            ((Excel.Range)excelworksheet.Cells[3, 3]).Value2 = "Кол-во";
-            ((Excel.Range)excelworksheet.Cells[3, 4]).Value2 = "Стоимость";
-
-            excelcells = excelworksheet.get_Range("E2", "F2");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "Факт";
-
-            ((Excel.Range)excelworksheet.Cells[3, 5]).Value2 = "Кол-во";
-            ((Excel.Range)excelworksheet.Cells[3, 6]).Value2 = "Стоимость";
-
-            excelcells = excelworksheet.get_Range("G2", "G3");
-            excelcells.Select();
-            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
-            excelcells.Value2 = "%";
-
-            excelcells = excelworksheet.get_Range("A1", "G3");
-            excelcells.Select();
-            excelcells.Font.Bold = true;
-            excelcells.HorizontalAlignment = Excel.Constants.xlCenter;
-            excelcells.VerticalAlignment = Excel.Constants.xlCenter;
-
-            foreach (DataRow dr in Summ.Rows)
-            {
-                ((Excel.Range)excelworksheet.Cells[I, 1]).Value2 = dr.ItemArray[0];
-                ((Excel.Range)excelworksheet.Cells[I, 2]).Value2 = dr.ItemArray[1];
-                ((Excel.Range)excelworksheet.Cells[I, 3]).Value2 = dr.ItemArray[2];
-                ((Excel.Range)excelworksheet.Cells[I, 4]).Value2 = dr.ItemArray[3];
-                ((Excel.Range)excelworksheet.Cells[I, 5]).Value2 = dr.ItemArray[4];
-                ((Excel.Range)excelworksheet.Cells[I, 6]).Value2 = dr.ItemArray[5];
-                ((Excel.Range)excelworksheet.Cells[I, 7]).Value2 = dr.ItemArray[6];
-                I++;
-            }
-
-            excelcells = excelworksheet.get_Range("A1", "G"+ (I - 1));
-            ////((Excel.Range)(excelapp.Selection)).bo;
-            excelcells.Select();
-            excelcells.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThin, Excel.XlColorIndex.xlColorIndexAutomatic);
+            this.Report1.IsEnabled = false;
+            this.Report1_BackgroundWorker.RunWorkerAsync(this.GetDates());
         }
         /// <summary>
         /// 
@@ -1530,10 +1416,56 @@ namespace Dasha
         /// <param name="e"></param>
         private void Report2_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            excelapp = new Excel.Application();
-            excelapp.Visible = true;
-            excelapp.SheetsInNewWorkbook = 1;
-            excelapp.Workbooks.Add(Type.Missing);
+            this.Report2.IsEnabled = false;
+            this.Report2_BackgroundWorker.RunWorkerAsync(this.GetDates());
+
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private Excel.Range Merge(string a, string b)
+        {
+            excelcells = excelworksheet.get_Range(a, b);
+            excelcells.Select();
+            ((Excel.Range)(excelapp.Selection)).Merge(Type.Missing);
+            return excelcells;
+        }
+
+        private SortedSet<DateTime> GetDates()
+        {
+            SortedSet<DateTime> dates = new SortedSet<DateTime>();
+
+            for (int i = 0; i < this.Dates_StackPanel.Children.Count; i++)
+            {
+                StackPanel sp = this.Dates_StackPanel.Children[i] as StackPanel;
+                if (sp.IsVisible)
+                {
+                    DateTime dt1 = (sp.Children[3] as DatePicker).SelectedDate.Value;
+                    DateTime dt2 = (sp.Children[5] as DatePicker).SelectedDate.Value;
+
+                    if (dt2 < dt1)
+                    {
+                        DateTime dt3 = dt2;
+                        dt2 = dt1;
+                        dt1 = dt3;
+                    }
+
+                    for (DateTime dti = dt1; dti <= dt2; dti = dti.AddDays(1))
+                    {
+                        if (!dates.Contains(dti))
+                        {
+                            dates.Add(dti);
+                        }
+                    }
+                }
+            }
+
+            return dates;
+        }
+
     }
 }
