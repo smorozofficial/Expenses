@@ -30,6 +30,7 @@ namespace Dasha
         BackgroundWorker backgroundworker2;
         BackgroundWorker Report1_BackgroundWorker;
         BackgroundWorker Report2_BackgroundWorker;
+        BackgroundWorker Report3_BackgroundWorker;
 
         DataTable activeTable = new DataTable();
         DataTable asyncTable = new DataTable();
@@ -59,6 +60,7 @@ namespace Dasha
             this.backgroundworker2 = (BackgroundWorker)this.FindResource("backgroundWorker_2");
             this.Report1_BackgroundWorker = (BackgroundWorker)this.FindResource("Report1_BackgroundWorker");
             this.Report2_BackgroundWorker = (BackgroundWorker)this.FindResource("Report2_BackgroundWorker");
+            this.Report3_BackgroundWorker = (BackgroundWorker)this.FindResource("Report3_BackgroundWorker");
 
             this.Date2_StackPanel.Visibility = Visibility.Hidden;
             this.Date3_StackPanel.Visibility = Visibility.Hidden;
@@ -134,6 +136,10 @@ namespace Dasha
                     if (e.Key == Key.D2)
                     {
                         this.Report2_PreviewMouseLeftButtonDown(this.Report2, null);
+                    }
+                    if (e.Key == Key.D3)
+                    {
+                        this.Report3_PreviewMouseLeftButtonDown(this.Report2, null);
                     }
                 }
 
@@ -1421,6 +1427,12 @@ namespace Dasha
 
         }
 
+        private void Report3_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.Report3.IsEnabled = false;
+            this.Report3_BackgroundWorker.RunWorkerAsync(this.GetDates());
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1466,6 +1478,5 @@ namespace Dasha
 
             return dates;
         }
-
     }
 }

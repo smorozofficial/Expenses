@@ -145,9 +145,9 @@ namespace Dasha
                 I++;
             }
 
-            excelcells = excelworksheet.get_Range("A1", "G" + (I - 1));
-            excelcells.Select();
-            excelcells.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThin, Excel.XlColorIndex.xlColorIndexAutomatic);
+            //excelcells = excelworksheet.get_Range("A1", "G" + (I - 1));
+            //excelcells.Select();
+            //excelcells.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThin, Excel.XlColorIndex.xlColorIndexAutomatic);
             excelapp.Visible = true;
         }
     }

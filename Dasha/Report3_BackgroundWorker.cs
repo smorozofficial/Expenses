@@ -16,7 +16,7 @@ namespace Dasha
     /// </summary>
     public partial class MainWindow : Window
     {
-        private void Report2_DoWork(object sender, DoWorkEventArgs e)
+        private void Report3_DoWork(object sender, DoWorkEventArgs e)
         {
             SortedSet<DateTime> dates = e.Argument as SortedSet<DateTime>;
 
@@ -25,7 +25,7 @@ namespace Dasha
 
             foreach (Expense ex in this.exs)
             {
-                if (ex.Type.Equals("Электричество"))
+                if (ex.Type.Equals("Вода"))
                 {
                     Summ.Columns.Add(new DataColumn(ex.Name));
                     Names.Add(ex.Name);
@@ -60,12 +60,12 @@ namespace Dasha
                 Summ.Rows.Add(dr);
             }
             ConnectDB.Close();
-            
-            this.Report2_Excel(Summ, dates);
+
+            this.Report3_Excel(Summ, dates);
         }
 
 
-        private void Report2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Report3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.Report2.IsEnabled = true;
 
@@ -79,7 +79,7 @@ namespace Dasha
             }
         }
 
-        private void Report2_Excel(DataTable Summ, SortedSet<DateTime> dates)
+        private void Report3_Excel(DataTable Summ, SortedSet<DateTime> dates)
         {
             excelapp = new Excel.Application();
             excelapp.SheetsInNewWorkbook = 2;
@@ -136,7 +136,7 @@ namespace Dasha
                 }
                 I += 2;
             }
-            
+
             excelworksheet = (Excel.Worksheet)excelsheets.get_Item(1);
             excelworksheet.Name = "Расход";
             excelworksheet.Activate();
@@ -176,14 +176,14 @@ namespace Dasha
                 ((Excel.Range)excelworksheet.Cells[I + 1, 1]).Font.ColorIndex = 5;//синий цвет для плана
                 foreach (DataRow dr in Summ.Rows)
                 {
-                    string s = dr.ItemArray[(I - 3)/2].ToString();
+                    string s = dr.ItemArray[(I - 3) / 2].ToString();
                     if (s.Length > 0)
                     {
                         ((Excel.Range)excelworksheet.Cells[I, J]).Value2 = s.Split(';')[0];
                         ((Excel.Range)excelworksheet.Cells[I + 1, J]).Value2 = s.Split(';')[2];
                         ((Excel.Range)excelworksheet.Cells[I + 1, J]).Font.ColorIndex = 5;//синий цвет для плана
                     }
-                    
+
                     J++;
                 }
                 I += 2;

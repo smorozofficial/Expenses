@@ -26,6 +26,7 @@
         <cm:BackgroundWorker x:Key="backgroundWorker_2" DoWork="BackgroundWorker_DoWork_2" RunWorkerCompleted="BackgroundWorker_RunWorkerCompleted_2" ></cm:BackgroundWorker>
         <cm:BackgroundWorker x:Key="Report1_BackgroundWorker" DoWork="Report1_DoWork" RunWorkerCompleted="Report1_RunWorkerCompleted" ></cm:BackgroundWorker>
         <cm:BackgroundWorker x:Key="Report2_BackgroundWorker" DoWork="Report2_DoWork" RunWorkerCompleted="Report2_RunWorkerCompleted" ></cm:BackgroundWorker>
+        <cm:BackgroundWorker x:Key="Report3_BackgroundWorker" DoWork="Report3_DoWork" RunWorkerCompleted="Report3_RunWorkerCompleted" ></cm:BackgroundWorker>
         <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{Binding ElementName=Process, Path=Background, Mode=OneWay}"/>
             <Setter Property="Padding" Value="6, 1"/>
@@ -333,7 +334,7 @@
                             </StackPanel>
                         </StackPanel>
                         <Border BorderBrush="{Binding BorderBrush, ElementName=Find_TextBox}" BorderThickness="1" Padding="0" Margin="0.857,10,0.429,9.571" Grid.Column="1" Width="1"/>
-                        <Label x:Name="label_Copy" Content="(Ctrl+3) Анализ затрат по воде" Margin="10,52,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
+                        <Label x:Name="Report3" Content="(Ctrl+3) Анализ затрат по воде" Margin="10,52,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave" PreviewMouseLeftButtonDown="Report3_PreviewMouseLeftButtonDown"/>
                         <Label x:Name="label_Copy1" Content="Отчет 4" Margin="10,73,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
                         <Label x:Name="label_Copy2" Content="Отчет 5" Margin="10,94,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
                         <Label x:Name="label_Copy3" Content="Отчет 6" Margin="10,115,10,0" Grid.Column="2" FontSize="14" Padding="5,1" VerticalAlignment="Top" IsManipulationEnabled="True" MouseEnter="Input_MouseEnter" MouseLeave="Input_MouseLeave"/>
